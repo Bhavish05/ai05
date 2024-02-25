@@ -1,0 +1,71 @@
+class WaterJugProblem:
+    def __init__(self, jug1_capacity, jug2_capacity, target_quantity):
+        self.jug1_capacity = jug1_capacity
+        self.jug2_capacity = jug2_capacity
+        self.target_quantity = target_quantity
+        self.jug_states = set()
+        self.result = []
+
+    def solve(self):
+        self._pour_water(0, 0)
+
+    def _pour_water(self, jug1_quantity, jug2_quantity):
+        if (jug1_quantity, jug2_quantity) == (self.target_quantity, 0):
+            self.result.append((jug1_quantity, jug2_quantity))
+            return True
+
+        if (jug1_quantity, jug2_quantity) in self.jug_states:
+            return False
+
+        self.jug_states.add((jug1_quantity, jug2_quantity))
+
+        if jug1_quantity < self.jug1_capacity:
+            if self._pour_water(self.jug1_capacity, jug2_quantity):
+                self.result.append((jug1_quantity, jug2_quantity))
+                return True
+
+        if jug2_quantity < self.jug2_capacity:
+            if self._pour_water(jug1_quantity, self.jug2_capacity):
+                self.result.append((jug1_quantity, jug2_quantity))
+                return True
+
+        if jug1_quantity > 0:
+            if self._pour_water(0, jug2_quantity):
+                self.result.append((jug1_quantity, jug2_quantity))
+                return True
+
+        if jug2_quantity > 0:
+            if self._pour_water(jug1_quantity, 0):
+                self.result.append((jug1_quantity, jug2_quantity))
+                return True
+
+        if jug1_quantity > 0 and jug2_quantity < self.jug2_capacity:
+            pour_amount = min(jug1_quantity, self.jug2_capacity - jug2_quantity)
+            if self._pour_water(jug1_quantity - pour_amount, jug2_quantity + pour_amount):
+                self.result.append((jug1_quantity, jug2_quantity))
+                return True
+
+        if jug2_quantity > 0 and jug1_quantity < self.jug1_capacity:
+            pour_amount = min(jug2_quantity, self.jug1_capacity - jug1_quantity)
+            if self._pour_water(jug1_quantity + pour_amount, jug2_quantity - pour_amount):
+                self.result.append((jug1_quantity, jug2_quantity))
+                return True
+
+        return False
+
+    def print_solution(self):
+        if not self.result:
+            print("No solution exists.")
+        else:
+            print("Steps to measure out the target quantity:")
+            for step in reversed(self.result):
+                print(f"Jug 1: {step[0]} liters, Jug 2: {step[1]} liters")
+
+
+if __name__ == "__main__":
+    jug1_capacity = int(input("Enter the capacity of Jug 1: "))
+    jug2_capacity = int(input("Enter the capacity of Jug 2: "))
+    target_quantity = int(input("Enter the target quantity: "))
+    problem = WaterJugProblem(jug1_capacity, jug2_capacity, target_quantity)
+    problem.solve()
+    problem.print_solution()
