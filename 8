@@ -1,0 +1,47 @@
+class State:
+    def __init__(self, monkey_loc, monkey_on_box, box_loc, monkey_has_banana):
+        self.monkey_loc = monkey_loc
+        self.monkey_on_box = monkey_on_box
+        self.box_loc = box_loc
+        self.monkey_has_banana = monkey_has_banana
+
+    def __str__(self):
+        return f"Monkey: {self.monkey_loc}, on box: {self.monkey_on_box}, Box: {self.box_loc}, Has Banana: {self.monkey_has_banana}"
+
+    def grasp(self):
+        self.monkey_has_banana = True
+
+    def climb(self):
+        self.monkey_on_box = True
+
+    def drag(self, P1, P2):
+        self.box_loc = P2
+
+    def walk(self, P1, P2):
+        self.monkey_loc = P2
+
+    def can_get(self):
+        return self.monkey_has_banana
+
+def solve():
+    initial_state = State("middle", False, "middle", False)
+    print(f"Initial State: {initial_state}")
+
+    initial_state.walk("left", "right")
+    print(f"Step 1: {initial_state}")
+
+    initial_state.drag("middle", "right")
+    print(f"Step 2: {initial_state}")
+
+    initial_state.climb()
+    print(f"Step 3: {initial_state}")
+
+    initial_state.grasp()
+    print(f"Step 4: {initial_state}")
+
+    if initial_state.can_get():
+        print("Goal reached: Monkey has the banana!")
+    else:
+        print("Goal not reached")
+
+solve()
